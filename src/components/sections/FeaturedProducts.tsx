@@ -8,6 +8,16 @@ import { featuredProducts } from "@/lib/products";
 import { EASE_OUT, revealViewport } from "@/lib/motion";
 
 export function FeaturedProducts() {
+  const products = featuredProducts;
+  const count = products.length;
+
+  const gridClass =
+    count === 1
+      ? "mx-auto max-w-md grid-cols-1"
+      : count === 2
+        ? "grid-cols-1 md:grid-cols-2"
+        : "grid-cols-1 md:grid-cols-3";
+
   return (
     <section
       aria-labelledby="featured-heading"
@@ -84,9 +94,9 @@ export function FeaturedProducts() {
           hidden: {},
           visible: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
         }}
-        className="mt-20 grid grid-cols-1 gap-14 md:grid-cols-3 md:gap-10 lg:gap-14"
+        className={`mt-20 grid gap-14 md:gap-10 lg:gap-14 ${gridClass}`}
       >
-        {featuredProducts.map((product) => (
+        {products.map((product) => (
           <motion.li
             key={product.id}
             variants={{
@@ -102,6 +112,18 @@ export function FeaturedProducts() {
           </motion.li>
         ))}
       </motion.ul>
+
+      {count < 3 ? (
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={revealViewport}
+          transition={{ duration: 0.9, ease: EASE_OUT, delay: 0.2 }}
+          className="mt-16 text-center text-sm italic tracking-wide text-ink-soft"
+        >
+          Our collection grows slowly &mdash; more harvests arriving this season.
+        </motion.p>
+      ) : null}
     </section>
   );
 }

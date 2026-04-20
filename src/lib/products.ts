@@ -1,44 +1,35 @@
 import type { Product } from "@/types/product";
 
-export const featuredProducts: Product[] = [
+export const products: Product[] = [
   {
-    id: "uji-ceremonial-30g",
-    slug: "uji-ceremonial-30g",
-    name: "Uji Ceremonial",
-    category: "matcha",
+    id: "yukata-ceremonial",
+    slug: "yukata",
+    name: "Yukata",
+    subtitle: "Ceremonial Matcha",
+    category: "matcha-powder",
     grade: "ceremonial",
+    size: "100g",
+    price: 385000,
+    currency: "IDR",
     origin: "Uji, Kyoto",
-    size: "30g tin",
-    priceIDR: 385000,
+    harvest: "First flush, shade-grown 21 days",
+    tastingNotes: ["Sweet umami", "Fresh grass", "Subtle cacao finish"],
     description:
-      "A bright, sweet matcha from first-harvest tencha. Stone-milled the morning it ships.",
-    imageUrl: "",
-    imageAlt: "Tin of Uji Ceremonial matcha on a linen cloth",
-  },
-  {
-    id: "nishio-everyday-50g",
-    slug: "nishio-everyday-50g",
-    name: "Nishio Everyday",
-    category: "matcha",
-    grade: "culinary",
-    origin: "Nishio, Aichi",
-    size: "50g pouch",
-    priceIDR: 225000,
-    description:
-      "A round, full-bodied culinary grade. Built for lattes, baking, and daily cups.",
-    imageUrl: "",
-    imageAlt: "Kraft pouch of Nishio Everyday culinary matcha",
-  },
-  {
-    id: "chasen-bamboo-whisk",
-    slug: "chasen-bamboo-whisk",
-    name: "Chasen — 80 Prong",
-    category: "tools",
-    origin: "Takayama, Nara",
-    priceIDR: 345000,
-    description:
-      "Handcut bamboo whisk by a third-generation artisan. The quiet workhorse of a good usucha.",
-    imageUrl: "",
-    imageAlt: "Handcrafted bamboo chasen whisk standing upright",
+      "Stone-milled within hours of arriving from Japan, Yukata is the quiet centerpiece of any morning. Vivid jade, velvet foam, and a finish that lingers like a held breath.",
+    images: {
+      main: "/products/yukata-ceremonial.jpg",
+      closeup: "/products/yukata-closeup.jpg",
+      powder: "/products/yukata-powder.jpg",
+      flatlay: "/products/yukata-flatlay.jpg",
+    },
+    stock: 47,
+    featured: true,
+    flagship: true,
   },
 ];
+
+export const featuredProducts = products.filter((p) => p.featured);
+
+export function getFlagshipProduct(): Product | undefined {
+  return products.find((p) => p.flagship);
+}

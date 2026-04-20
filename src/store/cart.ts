@@ -52,7 +52,7 @@ export const useCart = create<CartState>()(
         get().items.reduce((sum, i) => sum + i.quantity, 0),
       totalIDR: () =>
         get().items.reduce(
-          (sum, i) => sum + i.product.priceIDR * i.quantity,
+          (sum, i) => sum + i.product.price * i.quantity,
           0,
         ),
     }),

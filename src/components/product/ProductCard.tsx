@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Product } from "@/types/product";
@@ -16,7 +17,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link
         href={`/shop/${product.slug}`}
         prefetch={false}
-        aria-label={`${product.name} — ${formatIDR(product.priceIDR)}`}
+        aria-label={`${product.name} ${product.subtitle} — ${formatIDR(product.price)}`}
         className="group block focus:outline-none"
       >
         <motion.div
@@ -24,15 +25,12 @@ export function ProductCard({ product }: ProductCardProps) {
           transition={{ duration: 0.5, ease: EASE_OUT }}
           className="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-cream-soft ring-1 ring-line transition-[box-shadow,ring-color] duration-500 group-hover:shadow-[0_40px_80px_-30px_rgba(74,93,58,0.35)] group-hover:ring-matcha-mid"
         >
-          <motion.div
-            aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-br from-matcha-light/60 via-cream-soft to-matcha-mid/40"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.9, ease: EASE_OUT }}
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-matcha-deep/10 to-transparent"
+          <Image
+            src={product.images.main}
+            alt={`${product.name} — ${product.subtitle}`}
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
           />
           <span className="absolute left-4 top-4 rounded-full border border-line bg-cream/85 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-matcha-deep backdrop-blur">
             {product.grade ?? product.category}
@@ -50,7 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </p>
           </div>
           <span className="whitespace-nowrap text-sm text-matcha-deep">
-            {formatIDR(product.priceIDR)}
+            {formatIDR(product.price)}
           </span>
         </div>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">
