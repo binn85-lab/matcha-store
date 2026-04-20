@@ -8,17 +8,27 @@ import { SourcedFromJapan } from "@/components/sections/SourcedFromJapan";
 import { MatchaStory } from "@/components/sections/MatchaStory";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { getFlagshipProduct } from "@/lib/products";
-import { filterExisting } from "@/lib/product-images.server";
+import { existsInPublic, filterExisting } from "@/lib/product-images.server";
+
+const ritualPosterCandidates = [
+  "/ritual/ritual-sift-poster.png",
+  "/ritual/ritual-pour-poster.png",
+  "/ritual/ritual-whisk-poster.png",
+  "/ritual/ritual-drink-poster.png",
+];
 
 export default function HomePage() {
   const flagship = getFlagshipProduct();
+  const ritualPosters = ritualPosterCandidates.map((p) =>
+    existsInPublic(p) ? p : null,
+  );
 
   return (
     <>
       <Navbar />
       <main id="main" className="flex-1">
         <HeroScrollScrub />
-        <TheRitual />
+        <TheRitual posters={ritualPosters} />
         {flagship ? (
           <ProductShowcase
             product={flagship}

@@ -1,168 +1,316 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
   useTransform,
   useMotionValueEvent,
+  useReducedMotion,
+  type MotionValue,
 } from "framer-motion";
-import { useState } from "react";
-import { EASE_OUT } from "@/lib/motion";
+import { EASE_OUT, revealViewport } from "@/lib/motion";
 
-const steps = [
+interface Step {
+  kanji: string;
+  english: string;
+  description: string;
+  video: string;
+}
+
+const steps: Step[] = [
   {
     kanji: "篩",
-    title: "Sift.",
-    body: "Run 2g of matcha through a fine sieve to break clumps.",
+    english: "Sift",
+    description:
+      "2 – 5 grams of matcha, sesuai selera, through a fine sieve. Clumps dissolve, the powder breathes.",
+    video: "/ritual/ritual-sift.mp4",
   },
   {
     kanji: "注",
-    title: "Pour.",
-    body: "Add 60ml of water at 70°C — never boiling.",
+    english: "Pour",
+    description:
+      "60ml of water at 70°C. Never boiling — the leaf is alive, honor it.",
+    video: "/ritual/ritual-pour.mp4",
   },
   {
     kanji: "点",
-    title: "Whisk.",
-    body: "Move the chasen in a rapid W motion, wrist loose.",
+    english: "Whisk",
+    description:
+      "Rapid W motion, wrist loose. Not a stir — a wake-up call for the tea.",
+    video: "/ritual/ritual-whisk.mp4",
   },
   {
     kanji: "飲",
-    title: "Enjoy.",
-    body: "Drink within 60 seconds, while the foam is alive.",
+    english: "Drink",
+    description:
+      "Within 60 seconds, while the foam is still alive. Hold the bowl with both hands.",
+    video: "/ritual/ritual-drink.mp4",
   },
 ];
 
-const bowlShades = [
-  "radial-gradient(circle at 50% 45%, #eaf0d3 0%, #c5d1a8 35%, #7a8b5c 75%, #4a5d3a 100%)",
-  "radial-gradient(circle at 50% 45%, #d9e2b9 0%, #aebe8c 35%, #6b7d4e 75%, #435334 100%)",
-  "radial-gradient(circle at 50% 45%, #c5d1a8 0%, #94a476 35%, #5d6e48 75%, #3c4a2e 100%)",
-  "radial-gradient(circle at 50% 45%, #afbd8e 0%, #7a8b5c 35%, #4a5d3a 75%, #2e3a23 100%)",
-];
+interface TheRitualProps {
+  posters?: Array<string | null>;
+}
 
-export function TheRitual() {
-  const containerRef = useRef<HTMLDivElement>(null);
+export function TheRitual({ posters = [] }: TheRitualProps) {
+  const reduced = useReducedMotion();
+  const [slow, setSlow] = useState(false);
+
+  useEffect(() => {
+    const nav = navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const conn = nav.connection;
+    setSlow(
+      !!conn?.saveData ||
+        (conn?.effectiveType ? ["2g", "slow-2g"].includes(conn.effectiveType) : false),
+    );
+  }, []);
+
+  if (reduced || slow) {
+    return <StaticRitual posters={posters} />;
+  }
+  return <AnimatedRitual posters={posters} />;
+}
+
+function AnimatedRitual({ posters }: { posters: Array<string | null> }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const [activeStep, setActiveStep] = useState(0);
+  const inViewRef = useRef(true);
+
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  const [activeStep, setActiveStep] = useState(0);
+  // Per-video opacity curves (fixed number of hooks, not a loop).
+  const op0 = useTransform(scrollYProgress, [0, 0.125, 0.3], [1, 1, 0]);
+  const op1 = useTransform(scrollYProgress, [0.2, 0.375, 0.55], [0, 1, 0]);
+  const op2 = useTransform(scrollYProgress, [0.45, 0.625, 0.8], [0, 1, 0]);
+  const op3 = useTransform(scrollYProgress, [0.7, 0.875, 1], [0, 1, 1]);
+  const videoOpacities: MotionValue<number>[] = [op0, op1, op2, op3];
+
   useMotionValueEvent(scrollYProgress, "change", (p) => {
-    const i = Math.min(steps.length - 1, Math.max(0, Math.floor(p * steps.length)));
-    setActiveStep(i);
+    const i = Math.min(3, Math.max(0, Math.floor(p * steps.length)));
+    if (i !== activeStep) setActiveStep(i);
   });
 
-  const bowlScale = useTransform(scrollYProgress, [0, 1], [0.95, 1.05]);
-  const bowlRotate = useTransform(scrollYProgress, [0, 1], [0, 18]);
+  // Pause offscreen, play when in view.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inViewRef.current = entry.isIntersecting;
+        videoRefs.current.forEach((v) => {
+          if (!v) return;
+          if (entry.isIntersecting) {
+            v.play().catch(() => undefined);
+          } else {
+            v.pause();
+          }
+        });
+      },
+      { rootMargin: "20% 0px" },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // Kick off autoplay once videos can play.
+  useEffect(() => {
+    videoRefs.current.forEach((v) => {
+      if (!v) return;
+      const tryPlay = () => v.play().catch(() => undefined);
+      if (v.readyState >= 2) tryPlay();
+      else v.addEventListener("loadeddata", tryPlay, { once: true });
+    });
+  }, []);
 
   return (
     <section
-      ref={containerRef}
+      ref={sectionRef}
       aria-labelledby="ritual-heading"
-      className="relative bg-cream"
-      style={{ height: "400vh" }}
+      className="relative bg-cream min-h-[400vh] lg:min-h-[500vh]"
     >
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 md:grid-cols-12 md:gap-16 lg:px-10">
-          <div className="md:col-span-6">
-            <motion.div
-              style={{ scale: bowlScale, rotate: bowlRotate }}
-              className="relative mx-auto aspect-square w-full max-w-[520px]"
+      <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center px-4 py-10 lg:px-20 lg:py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={revealViewport}
+          transition={{ duration: 0.9, ease: EASE_OUT }}
+          className="mb-6 max-w-4xl text-center lg:mb-10"
+        >
+          <h2
+            id="ritual-heading"
+            className="serif text-4xl leading-tight text-matcha-deep lg:text-6xl"
+          >
+            Four small movements.
+          </h2>
+          <p className="serif mt-1 text-3xl italic text-matcha-mid lg:text-5xl">
+            One good cup.
+          </p>
+        </motion.div>
+
+        <div
+          className="relative mb-8 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-black shadow-2xl lg:mb-12"
+          style={{ maxWidth: "min(56rem, calc(52svh * 4 / 3))" }}
+        >
+          {steps.map((step, i) => (
+            <motion.video
+              key={step.video}
+              ref={(el: HTMLVideoElement | null) => {
+                videoRefs.current[i] = el;
+              }}
+              src={step.video}
+              poster={posters[i] ?? undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+              style={{ opacity: videoOpacities[i] }}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ))}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-cream/15"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.35)_100%)]"
+          />
+        </div>
+
+        <div className="flex w-full max-w-5xl flex-col items-center gap-6 lg:flex-row lg:items-start lg:gap-16">
+          <ProgressIndicator activeStep={activeStep} />
+
+          <ol
+            aria-label="The four movements of the ritual"
+            className="relative grid w-full grid-cols-1 grid-rows-1"
+          >
+            {steps.map((step, i) => {
+              const isActive = i === activeStep;
+              return (
+                <li
+                  key={step.english}
+                  aria-current={isActive ? "step" : undefined}
+                  aria-label={`Step ${i + 1}: ${step.english}`}
+                  style={{ opacity: isActive ? 1 : 0.15 }}
+                  className="col-start-1 row-start-1 flex flex-col items-center gap-3 transition-opacity duration-500 ease-in-out lg:flex-row lg:items-start lg:gap-10"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="serif block text-[100px] leading-none text-matcha-deep lg:min-w-[240px] lg:text-[180px]"
+                    style={{ fontWeight: 400 }}
+                  >
+                    {step.kanji}
+                  </span>
+                  <div className="flex flex-col items-center text-center lg:items-start lg:pt-8 lg:text-left">
+                    <span className="text-lg font-medium uppercase tracking-[0.3em] text-matcha-mid lg:text-2xl">
+                      {step.english}
+                    </span>
+                    <p className="serif mt-3 max-w-md text-base leading-relaxed text-ink lg:text-lg">
+                      {step.description}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProgressIndicator({ activeStep }: { activeStep: number }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="flex flex-row gap-3 lg:flex-col lg:pt-6"
+    >
+      {steps.map((_, i) => {
+        const active = i === activeStep;
+        return (
+          <span
+            key={i}
+            className={`block transition-all duration-[400ms] ease-in-out ${
+              active
+                ? "h-[2px] w-10 bg-matcha-deep opacity-100"
+                : "h-px w-5 bg-matcha-mid opacity-25"
+            }`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function StaticRitual({ posters }: { posters: Array<string | null> }) {
+  return (
+    <section
+      aria-labelledby="ritual-heading-static"
+      className="bg-cream px-6 py-32 lg:px-20 lg:py-44"
+    >
+      <div className="mx-auto max-w-5xl">
+        <div className="text-center">
+          <h2
+            id="ritual-heading-static"
+            className="serif text-4xl leading-tight text-matcha-deep lg:text-6xl"
+          >
+            Four small movements.
+          </h2>
+          <p className="serif mt-1 text-3xl italic text-matcha-mid lg:text-5xl">
+            One good cup.
+          </p>
+        </div>
+        <ol className="mt-20 space-y-16 lg:space-y-24">
+          {steps.map((step, i) => (
+            <li
+              key={step.english}
+              aria-label={`Step ${i + 1}: ${step.english}`}
+              className="flex flex-col items-center gap-6 lg:flex-row lg:items-start lg:gap-12"
             >
               <div
                 aria-hidden="true"
-                className="absolute inset-0 rounded-full blur-3xl opacity-60 bg-matcha-light"
-              />
-              <motion.div
-                role="img"
-                aria-label="A chawan filled with whisked matcha"
-                animate={{ background: bowlShades[activeStep] }}
-                transition={{ duration: 1.4, ease: EASE_OUT }}
-                className="relative aspect-square w-full rounded-full shadow-[0_60px_120px_-40px_rgba(74,93,58,0.6)]"
+                className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-black lg:w-[45%]"
               >
-                <div
+                {posters[i] ? (
+                  <img
+                    src={posters[i] as string}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <span className="serif text-9xl text-cream/40">
+                      {step.kanji}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+                <span
                   aria-hidden="true"
-                  className="absolute inset-[18%] rounded-full bg-[radial-gradient(circle_at_30%_25%,rgba(250,247,240,0.25),transparent_55%)]"
-                />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-[42%] rounded-full bg-cream/20 blur-md"
-                />
-              </motion.div>
-            </motion.div>
-          </div>
-
-          <div className="md:col-span-6">
-            <p className="text-xs uppercase tracking-[0.3em] text-matcha-mid">
-              The Ritual &middot; 一服
-            </p>
-            <h2
-              id="ritual-heading"
-              className="mt-4 text-5xl leading-[1.05] text-matcha-deep md:text-6xl"
-            >
-              Four small movements.
-              <br />
-              <span className="italic text-matcha-mid">One good cup.</span>
-            </h2>
-
-            <ol className="relative mt-12 space-y-2" aria-live="polite">
-              {steps.map((step, i) => {
-                const isActive = i === activeStep;
-                return (
-                  <motion.li
-                    key={step.title}
-                    animate={{
-                      opacity: isActive ? 1 : 0.28,
-                    }}
-                    transition={{ duration: 0.6, ease: EASE_OUT }}
-                    className="relative flex gap-6 py-4"
-                  >
-                    <div className="flex flex-col items-center">
-                      <span
-                        aria-hidden="true"
-                        className="serif text-3xl text-matcha-mid"
-                      >
-                        0{i + 1}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-baseline gap-4">
-                        <h3 className="serif text-4xl text-matcha-deep md:text-5xl">
-                          {step.title}
-                        </h3>
-                        <span
-                          aria-hidden="true"
-                          className="serif text-2xl text-matcha-light"
-                        >
-                          {step.kanji}
-                        </span>
-                      </div>
-                      <p className="mt-2 max-w-md text-base leading-relaxed text-ink-soft md:text-lg">
-                        {step.body}
-                      </p>
-                    </div>
-                  </motion.li>
-                );
-              })}
-            </ol>
-
-            <div className="mt-10 flex items-center gap-3" aria-hidden="true">
-              {steps.map((_, i) => (
-                <motion.span
-                  key={i}
-                  animate={{
-                    width: i === activeStep ? 32 : 12,
-                    backgroundColor:
-                      i === activeStep ? "var(--color-matcha-deep)" : "var(--color-line)",
-                  }}
-                  transition={{ duration: 0.5, ease: EASE_OUT }}
-                  className="block h-[2px] rounded-full"
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+                  className="serif block text-[100px] leading-none text-matcha-deep lg:text-[160px]"
+                >
+                  {step.kanji}
+                </span>
+                <span className="mt-4 text-lg font-medium uppercase tracking-[0.3em] text-matcha-mid lg:text-2xl">
+                  {step.english}
+                </span>
+                <p className="serif mt-3 max-w-md text-base leading-relaxed text-ink lg:text-lg">
+                  {step.description}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

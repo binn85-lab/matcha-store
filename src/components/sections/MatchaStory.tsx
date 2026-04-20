@@ -114,9 +114,7 @@ function StoryBlock({ block }: { block: Block }) {
   return (
     <div
       ref={ref}
-      className={`grid items-center gap-12 md:grid-cols-12 md:gap-16 ${
-        block.reverse ? "" : ""
-      }`}
+      className="relative grid items-center gap-12 md:grid-cols-12 md:gap-16"
     >
       <motion.div
         style={{ y: imageY }}
