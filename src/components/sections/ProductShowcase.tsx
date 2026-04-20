@@ -53,7 +53,7 @@ export function ProductShowcase({ product, galleryImages }: ProductShowcaseProps
       ref={sectionRef}
       aria-labelledby="showcase-heading"
       style={{ backgroundColor }}
-      className="relative overflow-hidden px-6 py-40 lg:px-20 lg:py-56"
+      className="relative overflow-hidden px-6 py-20 lg:px-20 lg:py-28"
     >
       <div className="mx-auto max-w-7xl">
         <div className="relative h-px w-full bg-line/50">

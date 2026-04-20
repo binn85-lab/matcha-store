@@ -21,7 +21,7 @@ export function FeaturedProducts() {
   return (
     <section
       aria-labelledby="featured-heading"
-      className="mx-auto max-w-7xl px-6 py-40 lg:px-10 lg:py-52"
+      className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28"
     >
       <motion.div
         initial="hidden"

@@ -26,7 +26,7 @@ export function SourcedFromJapan() {
       style={{ backgroundColor }}
       className="relative overflow-hidden"
     >
-      <div className="relative mx-auto flex min-h-[90vh] max-w-[1600px] flex-col justify-center px-6 py-40 lg:px-10 lg:py-56">
+      <div className="relative mx-auto flex min-h-[90vh] max-w-[1600px] flex-col justify-center px-6 py-20 lg:px-10 lg:py-28">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

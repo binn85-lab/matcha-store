@@ -48,7 +48,7 @@ export function MatchaStory() {
       aria-labelledby="story-heading"
       className="border-t border-line bg-cream-soft"
     >
-      <div className="mx-auto max-w-7xl px-6 py-40 lg:px-10 lg:py-52">
+      <div className="mx-auto max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
         <motion.div
           initial="hidden"
           whileInView="visible"
