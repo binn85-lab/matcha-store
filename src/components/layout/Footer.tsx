@@ -89,6 +89,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
+                      prefetch={false}
                       className="text-sm text-ink-soft transition-colors hover:text-matcha-deep"
                     >
                       {link.label}

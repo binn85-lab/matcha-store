@@ -23,10 +23,15 @@ export function LinkButton({
   variant = "primary",
   className,
   children,
+  prefetch = false,
   ...props
 }: LinkButtonProps) {
   return (
-    <Link className={cn(base, variants[variant], className)} {...props}>
+    <Link
+      className={cn(base, variants[variant], className)}
+      prefetch={prefetch}
+      {...props}
+    >
       {children}
     </Link>
   );

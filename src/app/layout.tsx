@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import { SmoothScroll } from "@/components/providers/SmoothScroll";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +42,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
-        {children}
+        <SmoothScroll>
+          <ScrollProgress />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );
