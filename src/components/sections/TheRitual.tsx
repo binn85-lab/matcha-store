@@ -54,9 +54,20 @@ const PAPER_NOISE_URL =
 
 const INK_EASE = [0.25, 0.1, 0.25, 1] as const;
 
-// Toggle to render a fixed overlay that reports scrollYProgress and
-// each video's computed opacity. Left on until the crossfade is verified.
+// Flip to false once crossfade is verified in the browser.
 const DEBUG_OVERLAY = true;
+
+function lerpClamped(v: number, input: number[], output: number[]): number {
+  if (v <= input[0]) return output[0];
+  if (v >= input[input.length - 1]) return output[output.length - 1];
+  for (let i = 0; i < input.length - 1; i++) {
+    if (v >= input[i] && v <= input[i + 1]) {
+      const t = (v - input[i]) / (input[i + 1] - input[i]);
+      return output[i] + (output[i + 1] - output[i]) * t;
+    }
+  }
+  return output[output.length - 1];
+}
 
 interface TheRitualProps {
   posters?: Array<string | null>;
@@ -87,10 +98,26 @@ export function TheRitual({ posters = [] }: TheRitualProps) {
 
 function AnimatedRitual() {
   const outerScrollRef = useRef<HTMLElement>(null);
-  const siftRef = useRef<HTMLVideoElement>(null);
-  const pourRef = useRef<HTMLVideoElement>(null);
-  const whiskRef = useRef<HTMLVideoElement>(null);
-  const drinkRef = useRef<HTMLVideoElement>(null);
+
+  // Refs for each video element (for play/pause control).
+  const siftVideoRef = useRef<HTMLVideoElement>(null);
+  const pourVideoRef = useRef<HTMLVideoElement>(null);
+  const whiskVideoRef = useRef<HTMLVideoElement>(null);
+  const drinkVideoRef = useRef<HTMLVideoElement>(null);
+
+  // Refs for each video's wrapping layer (for direct opacity updates).
+  const siftLayerRef = useRef<HTMLDivElement>(null);
+  const pourLayerRef = useRef<HTMLDivElement>(null);
+  const whiskLayerRef = useRef<HTMLDivElement>(null);
+  const drinkLayerRef = useRef<HTMLDivElement>(null);
+
+  // Refs for debug overlay spans.
+  const dbgProgressRef = useRef<HTMLSpanElement>(null);
+  const dbgSiftRef = useRef<HTMLSpanElement>(null);
+  const dbgPourRef = useRef<HTMLSpanElement>(null);
+  const dbgWhiskRef = useRef<HTMLSpanElement>(null);
+  const dbgDrinkRef = useRef<HTMLSpanElement>(null);
+
   const [activeStep, setActiveStep] = useState(0);
 
   const { scrollYProgress } = useScroll({
@@ -98,27 +125,32 @@ function AnimatedRitual() {
     offset: ["start start", "end end"],
   });
 
-  // Per-video crossfade opacities. DOM order = stacking:
-  // sift (bottom) → pour → whisk → drink (top).
-  const siftOpacity = useTransform(scrollYProgress, [0, 0.15, 0.28], [1, 1, 0]);
-  const pourOpacity = useTransform(scrollYProgress, [0.22, 0.37, 0.53], [0, 1, 0]);
-  const whiskOpacity = useTransform(scrollYProgress, [0.47, 0.62, 0.78], [0, 1, 0]);
-  const drinkOpacity = useTransform(scrollYProgress, [0.72, 0.87, 1], [0, 1, 1]);
-
+  // backgroundColor still drives via framer-motion (this path is known good —
+  // the watermark opacity/cross-fade uses the same mechanism and works).
   const backgroundColor = useTransform(
     scrollYProgress,
     [0, 0.33, 0.66, 1],
     ["#FAF7F0", "#F5F1DF", "#F0EEE0", "#FAF7F0"],
   );
 
-  // Debug readouts (motion value → string, no React re-render).
-  const progressText = useTransform(scrollYProgress, (v) => v.toFixed(3));
-  const siftText = useTransform(siftOpacity, (v) => v.toFixed(2));
-  const pourText = useTransform(pourOpacity, (v) => v.toFixed(2));
-  const whiskText = useTransform(whiskOpacity, (v) => v.toFixed(2));
-  const drinkText = useTransform(drinkOpacity, (v) => v.toFixed(2));
-
+  // Single handler for EVERYTHING scroll-driven, updates DOM directly.
   useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const sift = lerpClamped(v, [0, 0.15, 0.28], [1, 1, 0]);
+    const pour = lerpClamped(v, [0.22, 0.37, 0.53], [0, 1, 0]);
+    const whisk = lerpClamped(v, [0.47, 0.62, 0.78], [0, 1, 0]);
+    const drink = lerpClamped(v, [0.72, 0.87, 1], [0, 1, 1]);
+
+    if (siftLayerRef.current) siftLayerRef.current.style.opacity = String(sift);
+    if (pourLayerRef.current) pourLayerRef.current.style.opacity = String(pour);
+    if (whiskLayerRef.current) whiskLayerRef.current.style.opacity = String(whisk);
+    if (drinkLayerRef.current) drinkLayerRef.current.style.opacity = String(drink);
+
+    if (dbgProgressRef.current) dbgProgressRef.current.textContent = v.toFixed(3);
+    if (dbgSiftRef.current) dbgSiftRef.current.textContent = sift.toFixed(2);
+    if (dbgPourRef.current) dbgPourRef.current.textContent = pour.toFixed(2);
+    if (dbgWhiskRef.current) dbgWhiskRef.current.textContent = whisk.toFixed(2);
+    if (dbgDrinkRef.current) dbgDrinkRef.current.textContent = drink.toFixed(2);
+
     let next: number;
     if (v < 0.25) next = 0;
     else if (v < 0.5) next = 1;
@@ -127,7 +159,7 @@ function AnimatedRitual() {
     setActiveStep(next);
   });
 
-  // Mount log — proves the expected video paths are what we render.
+  // Mount log — prove the expected video paths are what we render.
   useEffect(() => {
     console.log(
       "[ritual] section mounted, video paths:",
@@ -139,18 +171,23 @@ function AnimatedRitual() {
   useEffect(() => {
     const section = outerScrollRef.current;
     if (!section) return;
-    const videos = [
-      siftRef.current,
-      pourRef.current,
-      whiskRef.current,
-      drinkRef.current,
-    ];
     const observer = new IntersectionObserver(
       ([entry]) => {
+        const videos = [
+          siftVideoRef.current,
+          pourVideoRef.current,
+          whiskVideoRef.current,
+          drinkVideoRef.current,
+        ];
         videos.forEach((v) => {
           if (!v) return;
-          if (entry.isIntersecting) v.play().catch(() => undefined);
-          else v.pause();
+          if (entry.isIntersecting) {
+            v.play().catch((err) =>
+              console.warn(`[ritual] play rejected for ${v.src}:`, err),
+            );
+          } else {
+            v.pause();
+          }
         });
       },
       { rootMargin: "20% 0px" },
@@ -159,17 +196,20 @@ function AnimatedRitual() {
     return () => observer.disconnect();
   }, []);
 
-  // Kick off playback once each video has data.
+  // Kick playback once each video has data.
   useEffect(() => {
     const videos = [
-      siftRef.current,
-      pourRef.current,
-      whiskRef.current,
-      drinkRef.current,
+      siftVideoRef.current,
+      pourVideoRef.current,
+      whiskVideoRef.current,
+      drinkVideoRef.current,
     ];
     videos.forEach((v) => {
       if (!v) return;
-      const tryPlay = () => v.play().catch(() => undefined);
+      const tryPlay = () =>
+        v.play().catch((err) =>
+          console.warn(`[ritual] play rejected for ${v.src}:`, err),
+        );
       if (v.readyState >= 2) tryPlay();
       else v.addEventListener("loadeddata", tryPlay, { once: true });
     });
@@ -179,12 +219,13 @@ function AnimatedRitual() {
   const activeEnglish = steps[activeStep].english;
   const activeDescription = steps[activeStep].description;
 
-  const onLoaded = (label: string) => (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    console.log(
-      `[ritual] ${label} loadedmetadata:`,
-      e.currentTarget.currentSrc || e.currentTarget.src,
-    );
-  };
+  const onLoaded =
+    (label: string) => (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      console.log(
+        `[ritual] ${label} loadedmetadata:`,
+        e.currentTarget.currentSrc || e.currentTarget.src,
+      );
+    };
 
   return (
     <section
@@ -250,13 +291,14 @@ function AnimatedRitual() {
             className="relative z-10 mb-6 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-black shadow-2xl lg:mb-8"
             style={{ maxWidth: "min(48rem, calc(38svh * 4 / 3))" }}
           >
-            {/* bottom of stack */}
-            <motion.div
+            {/* bottom of stack: sift */}
+            <div
+              ref={siftLayerRef}
               className="absolute inset-0 h-full w-full"
-              style={{ opacity: siftOpacity }}
+              style={{ opacity: 1 }}
             >
               <video
-                ref={siftRef}
+                ref={siftVideoRef}
                 src="/ritual/ritual-sift.mp4"
                 autoPlay
                 muted
@@ -267,14 +309,15 @@ function AnimatedRitual() {
                 aria-hidden="true"
                 className="h-full w-full object-cover"
               />
-            </motion.div>
+            </div>
 
-            <motion.div
+            <div
+              ref={pourLayerRef}
               className="absolute inset-0 h-full w-full"
-              style={{ opacity: pourOpacity }}
+              style={{ opacity: 0 }}
             >
               <video
-                ref={pourRef}
+                ref={pourVideoRef}
                 src="/ritual/ritual-pour.mp4"
                 autoPlay
                 muted
@@ -285,14 +328,15 @@ function AnimatedRitual() {
                 aria-hidden="true"
                 className="h-full w-full object-cover"
               />
-            </motion.div>
+            </div>
 
-            <motion.div
+            <div
+              ref={whiskLayerRef}
               className="absolute inset-0 h-full w-full"
-              style={{ opacity: whiskOpacity }}
+              style={{ opacity: 0 }}
             >
               <video
-                ref={whiskRef}
+                ref={whiskVideoRef}
                 src="/ritual/ritual-whisk.mp4"
                 autoPlay
                 muted
@@ -303,15 +347,16 @@ function AnimatedRitual() {
                 aria-hidden="true"
                 className="h-full w-full object-cover"
               />
-            </motion.div>
+            </div>
 
-            {/* top of stack */}
-            <motion.div
+            {/* top of stack: drink */}
+            <div
+              ref={drinkLayerRef}
               className="absolute inset-0 h-full w-full"
-              style={{ opacity: drinkOpacity }}
+              style={{ opacity: 0 }}
             >
               <video
-                ref={drinkRef}
+                ref={drinkVideoRef}
                 src="/ritual/ritual-drink.mp4"
                 autoPlay
                 muted
@@ -322,7 +367,7 @@ function AnimatedRitual() {
                 aria-hidden="true"
                 className="h-full w-full object-cover"
               />
-            </motion.div>
+            </div>
           </motion.div>
 
           <div className="relative z-10 w-full max-w-4xl lg:pl-32">
@@ -388,19 +433,19 @@ function AnimatedRitual() {
       {DEBUG_OVERLAY ? (
         <div className="fixed right-4 top-4 z-[60] rounded bg-black/70 p-2 font-mono text-[11px] leading-4 text-white">
           <div>
-            progress: <motion.span>{progressText}</motion.span>
+            progress: <span ref={dbgProgressRef}>0.000</span>
           </div>
           <div>
-            sift: <motion.span>{siftText}</motion.span>
+            sift: <span ref={dbgSiftRef}>1.00</span>
           </div>
           <div>
-            pour: <motion.span>{pourText}</motion.span>
+            pour: <span ref={dbgPourRef}>0.00</span>
           </div>
           <div>
-            whisk: <motion.span>{whiskText}</motion.span>
+            whisk: <span ref={dbgWhiskRef}>0.00</span>
           </div>
           <div>
-            drink: <motion.span>{drinkText}</motion.span>
+            drink: <span ref={dbgDrinkRef}>0.00</span>
           </div>
           <div>step: {activeStep + 1}</div>
         </div>
