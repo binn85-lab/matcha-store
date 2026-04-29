@@ -17,16 +17,16 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Homelab — Ceremonial & Culinary Matcha from Japan",
+  title: "Homelab — Premium Japanese Matcha Powder in Indonesia",
   description:
-    "Homelab is a quiet laboratory for tea lovers. Single-origin ceremonial and culinary matcha, plus the tools to brew it well. Shipped from Indonesia.",
+    "Shop premium Japanese matcha powder in Indonesia with Homelab. Smooth Uji-style matcha for latte, whisked tea, baking, and daily rituals at home.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),
   openGraph: {
-    title: "Homelab — Ceremonial & Culinary Matcha",
+    title: "Homelab — Premium Japanese Matcha in Indonesia",
     description:
-      "Single-origin matcha and handcrafted tools for the modern tea ritual.",
+      "Smooth Japanese matcha powder for latte, whisked tea, baking, and daily rituals at home.",
     type: "website",
   },
 };

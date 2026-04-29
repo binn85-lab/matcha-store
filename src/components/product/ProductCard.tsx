@@ -23,7 +23,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <motion.div
           whileHover={{ y: -8 }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-cream-soft ring-1 ring-line transition-[box-shadow,ring-color] duration-500 group-hover:shadow-[0_40px_80px_-30px_rgba(74,93,58,0.35)] group-hover:ring-matcha-mid"
+          className="relative aspect-square w-full overflow-hidden rounded-sm bg-cream-soft ring-1 ring-line transition-[box-shadow,ring-color] duration-500 group-hover:shadow-[0_40px_80px_-30px_rgba(74,93,58,0.35)] group-hover:ring-matcha-mid"
         >
           <Image
             src={product.images.main}

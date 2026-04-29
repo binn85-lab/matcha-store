@@ -3,9 +3,10 @@ export function cn(...classes: Array<string | false | null | undefined>) {
 }
 
 export function formatIDR(amount: number): string {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
+  // Manual format to avoid SSR/client ICU mismatch on the currency symbol spacing
+  // (Node outputs "Rp385.000", some browsers output "Rp 385.000").
+  const digits = new Intl.NumberFormat("id-ID", {
+    maximumFractionDigits: 0,
   }).format(amount);
+  return `Rp${digits}`;
 }

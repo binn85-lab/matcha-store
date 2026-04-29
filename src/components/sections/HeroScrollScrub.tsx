@@ -10,7 +10,7 @@ type Mode = "scrub" | "autoplay" | "static";
 
 const beats = [
   {
-    eyebrow: "Est. Jakarta · Sourced from Japan",
+    eyebrow: "Premium Matcha · Jakarta",
     headline: "A quiet laboratory",
     sub: "for tea lovers.",
     start: 0,

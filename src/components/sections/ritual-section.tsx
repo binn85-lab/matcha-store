@@ -1,7 +1,7 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
+import { motion, useScroll, useMotionValueEvent } from "framer-motion"
 
 const steps = [
   {
@@ -9,42 +9,40 @@ const steps = [
     english: "SIFT",
     description: "2 – 5 grams of matcha, sesuai selera, through a fine sieve. Clumps dissolve, the powder breathes.",
     video: "/ritual/ritual-sift.mp4",
+    poster: "/ritual/ritual-sift-poster.png",
   },
   {
     kanji: "注",
     english: "POUR",
     description: "60ml of water at 70°C. Never boiling — the leaf is alive, honor it.",
     video: "/ritual/ritual-pour.mp4",
+    poster: "/ritual/ritual-pour-poster.png",
   },
   {
     kanji: "点",
     english: "WHISK",
     description: "Rapid W motion, wrist loose. Not a stir — a wake-up call for the tea.",
     video: "/ritual/ritual-whisk.mp4",
+    poster: "/ritual/ritual-whisk-poster.png",
   },
   {
     kanji: "飲",
     english: "DRINK",
     description: "Within 60 seconds, while the foam is still alive. Hold the bowl with both hands.",
     video: "/ritual/ritual-drink.mp4",
+    poster: "/ritual/ritual-drink-poster.png",
   },
 ]
 
 export default function RitualSection() {
   const sectionRef = useRef<HTMLElement>(null)
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([])
   const [activeStep, setActiveStep] = useState(0)
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   })
-
-  const siftOpacity = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0])
-  const pourOpacity = useTransform(scrollYProgress, [0.25, 0.4, 0.55], [0, 1, 0])
-  const whiskOpacity = useTransform(scrollYProgress, [0.5, 0.65, 0.8], [0, 1, 0])
-  const drinkOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 1, 1])
-
-  const opacities = [siftOpacity, pourOpacity, whiskOpacity, drinkOpacity]
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     if (v < 0.25) setActiveStep(0)
@@ -53,7 +51,21 @@ export default function RitualSection() {
     else setActiveStep(3)
   })
 
-  const kanjiWatermarkX = useTransform(scrollYProgress, [0, 1], ["-5%", "-15%"])
+  // Only the active video plays — avoids browser autoplay throttling when
+  // multiple <video autoplay> elements are on the same page. The others sit
+  // paused with their poster frame visible, so the crossfade still looks smooth.
+  useEffect(() => {
+    videoRefs.current.forEach((el, i) => {
+      if (!el) return
+      if (i === activeStep) {
+        el.currentTime = 0
+        const p = el.play()
+        if (p && typeof p.catch === "function") p.catch(() => {})
+      } else {
+        el.pause()
+      }
+    })
+  }, [activeStep])
 
   return (
     <section
@@ -66,7 +78,8 @@ export default function RitualSection() {
         {/* Background kanji watermark */}
         <motion.div
           className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none select-none"
-          style={{ x: kanjiWatermarkX }}
+          animate={{ x: `${-5 - activeStep * 3}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           aria-hidden="true"
         >
           <div className="text-[40vw] lg:text-[32vw] leading-none font-serif text-[#4A5D3A]/8 blur-[2px]">
@@ -90,11 +103,15 @@ export default function RitualSection() {
             <motion.div
               key={step.english}
               className="absolute inset-0 w-full h-full"
-              style={{ opacity: opacities[i] }}
+              animate={{ opacity: activeStep === i ? 1 : 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
             >
               <video
+                ref={(el) => {
+                  videoRefs.current[i] = el
+                }}
                 src={step.video}
-                autoPlay
+                poster={step.poster}
                 muted
                 loop
                 playsInline
@@ -149,12 +166,8 @@ export default function RitualSection() {
         {/* Dev debug overlay — remove after confirming it works */}
         {process.env.NODE_ENV === "development" && (
           <div className="fixed top-4 right-4 bg-black/80 text-white text-xs p-3 rounded font-mono z-[9999] space-y-1 pointer-events-none">
-            <div>step: {activeStep}</div>
+            <div>step: {activeStep} ({steps[activeStep].english})</div>
             <div>scroll: <motion.span>{scrollYProgress}</motion.span></div>
-            <div>sift: <motion.span>{siftOpacity}</motion.span></div>
-            <div>pour: <motion.span>{pourOpacity}</motion.span></div>
-            <div>whisk: <motion.span>{whiskOpacity}</motion.span></div>
-            <div>drink: <motion.span>{drinkOpacity}</motion.span></div>
           </div>
         )}
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
@@ -43,9 +44,18 @@ export function Navbar() {
           <Link
             href="/"
             aria-label="Homelab — home"
-            className="serif text-2xl tracking-wide text-matcha-deep transition-transform duration-300 hover:scale-[1.03]"
+            className="block transition-transform duration-300 hover:scale-[1.03]"
           >
-            Homelab
+            <Image
+              src="/brand/homelab-logo.png"
+              alt="Homelab"
+              width={8000}
+              height={1342}
+              priority
+              className={`h-7 w-auto object-contain transition-[filter] duration-500 md:h-8 ${
+                scrolled ? "" : "brightness-0 invert"
+              }`}
+            />
           </Link>
 
           <ul className="hidden items-center gap-10 md:flex">
@@ -119,9 +129,14 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
       aria-label="Menu"
     >
       <div className="flex h-20 items-center justify-between px-6">
-        <span className="serif text-2xl tracking-wide text-matcha-deep">
-          Homelab
-        </span>
+        <Image
+          src="/brand/homelab-logo.png"
+          alt="Homelab"
+          width={8000}
+          height={1342}
+          priority
+          className="h-7 w-auto object-contain"
+        />
         <button
           type="button"
           aria-label="Close menu"

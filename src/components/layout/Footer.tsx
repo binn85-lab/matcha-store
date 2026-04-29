@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Mail } from "lucide-react";
 
@@ -56,7 +57,13 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
-            <p className="serif text-3xl text-matcha-deep">Homelab</p>
+            <Image
+              src="/brand/homelab-logo.png"
+              alt="Homelab"
+              width={8000}
+              height={1342}
+              className="h-8 w-auto object-contain"
+            />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">
               A quiet laboratory for tea lovers. Single-origin matcha and the
               tools to brew it well — shipped carefully from Indonesia.
