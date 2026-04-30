@@ -7,8 +7,8 @@ import { EASE_OUT } from "@/lib/motion";
 
 const storyPoints = [
   {
-    title: "Japanese matcha, prepared for Indonesia",
-    body: "Homelab selects Japanese matcha powder with a clean green aroma, smooth umami, and low bitterness so every cup feels balanced in Jakarta's warm mornings.",
+    title: "Japanese-style matcha for daily rituals",
+    body: "Homelab selects matcha powder with a clean green aroma, smooth body, and low bitterness so every cup feels balanced for home drinks across Indonesia.",
   },
   {
     title: "Made for latte, whisk, and daily ritual",

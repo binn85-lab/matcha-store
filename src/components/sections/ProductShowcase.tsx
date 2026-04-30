@@ -1,12 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform, type Variants } from "framer-motion";
 import type { Product } from "@/types/product";
-import { formatIDR } from "@/lib/utils";
-import { useCart } from "@/store/cart";
 import { EASE_OUT, revealViewport } from "@/lib/motion";
 import { SHOWCASE_ANCHOR_ID } from "@/lib/use-smart-shop-scroll";
 
@@ -20,11 +17,25 @@ const itemVariants: Variants = {
 };
 
 interface ProductShowcaseProps {
-  product: Product;
-  galleryImages: string[];
+  products: Product[];
 }
 
-export function ProductShowcase({ product, galleryImages }: ProductShowcaseProps) {
+const marketplaceLinks = [
+  {
+    label: "Shopee",
+    href: "https://s.shopee.co.id/70Gb0DtNUE",
+  },
+  {
+    label: "Tokopedia",
+    href: "https://tk.tokopedia.com/ZS9fFGx3F/",
+  },
+  {
+    label: "TikTok Shop",
+    href: "https://vt.tiktok.com/ZS9fYFr3t/?page=Mall",
+  },
+];
+
+export function ProductShowcase({ products }: ProductShowcaseProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -37,15 +48,6 @@ export function ProductShowcase({ product, galleryImages }: ProductShowcaseProps
     ["#FAF7F0", "#F5F0E0", "#FAF7F0"],
   );
   const lineWidth = useTransform(scrollYProgress, [0.05, 0.35], ["0%", "100%"]);
-  const imageY = useTransform(scrollYProgress, [0, 1], [30, -30]);
-
-  const [mainImage, setMainImage] = useState<string>(
-    galleryImages[0] ?? product.images.main,
-  );
-  const [quantity, setQuantity] = useState(1);
-  const addItem = useCart((s) => s.addItem);
-
-  const hasThumbs = galleryImages.length > 1;
 
   return (
     <motion.section
@@ -71,209 +73,137 @@ export function ProductShowcase({ product, galleryImages }: ProductShowcaseProps
           transition={{ duration: 0.8, ease: EASE_OUT }}
           className="mt-16 text-center text-xs uppercase tracking-[0.32em] text-matcha-mid"
         >
-          The Flagship
+          Flagship Matcha
         </motion.p>
       </div>
 
-      <div className="mx-auto mt-24 grid max-w-7xl gap-16 lg:grid-cols-2 lg:gap-24">
-        <div className="lg:sticky lg:top-32 lg:self-start">
-          <motion.div style={{ y: imageY }}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+      <div className="mx-auto mt-16 grid max-w-7xl gap-8 lg:grid-cols-2">
+        {products.map((product, index) => {
+          return (
+            <motion.article
+              key={product.id}
+              initial="hidden"
+              whileInView="visible"
               viewport={revealViewport}
-              transition={{ duration: 1.1, ease: EASE_OUT }}
-              whileHover={{ scale: 1.02 }}
-              className="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-cream-soft shadow-[0_40px_100px_-40px_rgba(74,93,58,0.45)]"
-              style={{ transitionDuration: "3000ms" }}
+              variants={{
+                hidden: {},
+                visible: { transition: { staggerChildren: 0.1 } },
+              }}
+              className="grid gap-8 rounded-sm border border-line/70 bg-cream/70 p-5 shadow-[0_36px_100px_-60px_rgba(74,93,58,0.45)] md:p-7"
             >
-              <Image
-                src={mainImage}
-                alt={`${product.name} — ${product.subtitle} from ${product.origin}`}
-                fill
-                sizes="(min-width: 1024px) 45vw, 100vw"
-                className="object-cover"
-                priority={false}
-              />
-            </motion.div>
-          </motion.div>
+              <motion.div
+                variants={itemVariants}
+                whileHover={{ scale: 1.015 }}
+                className="relative aspect-square w-full overflow-hidden rounded-sm bg-cream-soft"
+              >
+                <Image
+                  src={product.images.main}
+                  alt={`${product.name} — ${product.subtitle}`}
+                  fill
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  className="object-contain p-6"
+                  priority={false}
+                />
+              </motion.div>
 
-          {hasThumbs ? (
-            <div className="mt-5 flex gap-3">
-              {galleryImages.map((img) => {
-                const active = img === mainImage;
-                return (
-                  <button
-                    key={img}
-                    type="button"
-                    aria-label={`Show ${product.name} detail`}
-                    aria-pressed={active}
-                    onClick={() => setMainImage(img)}
-                    className={`relative aspect-square w-20 overflow-hidden rounded-sm border transition-all duration-300 ${
-                      active
-                        ? "border-matcha-deep ring-1 ring-matcha-deep"
-                        : "border-line hover:border-matcha-mid"
-                    }`}
-                  >
-                    <Image
-                      src={img}
-                      alt=""
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                    />
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
-        </div>
+              <div>
+                <motion.p
+                  variants={itemVariants}
+                  className="text-xs uppercase tracking-[0.28em] text-matcha-mid"
+                >
+                  Pure Matcha · {product.size}
+                </motion.p>
 
+                <motion.h2
+                  id={index === 0 ? "showcase-heading" : undefined}
+                  variants={itemVariants}
+                  className="serif mt-5 text-5xl italic leading-[0.95] text-matcha-deep md:text-6xl"
+                >
+                  {product.name}
+                </motion.h2>
+
+                <motion.p
+                  variants={itemVariants}
+                  className="serif mt-4 text-xl text-ink"
+                >
+                  {product.subtitle}
+                </motion.p>
+
+                <motion.ul
+                  variants={itemVariants}
+                  className="mt-8 space-y-3 text-sm leading-relaxed text-ink-soft"
+                >
+                  {product.tastingNotes?.map((note) => (
+                    <li key={note} className="flex items-baseline gap-3">
+                      <span aria-hidden="true" className="text-matcha-mid">
+                        ·
+                      </span>
+                      <span>{note}</span>
+                    </li>
+                  ))}
+                </motion.ul>
+
+                <motion.p
+                  variants={itemVariants}
+                  className="mt-8 max-w-xl text-base leading-relaxed text-ink-soft"
+                >
+                  {product.description}
+                </motion.p>
+              </div>
+            </motion.article>
+          );
+        })}
+      </div>
+
+      <div className="mx-auto mt-12 max-w-7xl rounded-sm border border-line bg-cream p-5 md:p-7">
         <motion.div
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={revealViewport}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
-          className="flex flex-col"
+          transition={{ duration: 0.85, ease: EASE_OUT }}
+          className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"
         >
-          <motion.p
-            variants={itemVariants}
-            className="text-xs uppercase tracking-[0.28em] text-matcha-mid"
-          >
-            Ceremonial Grade · {product.size}
-          </motion.p>
-
-          <motion.h2
-            id="showcase-heading"
-            variants={itemVariants}
-            className="serif mt-10 text-7xl italic leading-[0.9] text-matcha-deep lg:text-9xl"
-          >
-            {product.name}
-          </motion.h2>
-
-          <motion.p
-            variants={itemVariants}
-            className="serif mt-5 text-2xl text-ink lg:text-3xl"
-          >
-            {product.subtitle}
-          </motion.p>
-
-          <motion.div
-            variants={itemVariants}
-            className="mt-12 flex flex-wrap items-baseline gap-x-4 gap-y-1"
-          >
-            <span className="serif text-2xl text-matcha-deep">
-              {formatIDR(product.price)}
-            </span>
-            <span className="text-[11px] uppercase tracking-[0.22em] text-ink-soft">
-              Inclusive of PPN
-            </span>
-          </motion.div>
-
-          <motion.ul
-            variants={itemVariants}
-            className="mt-12 space-y-3 text-sm leading-relaxed text-ink-soft"
-          >
-            <li className="flex items-baseline gap-3">
-              <span aria-hidden="true" className="text-matcha-mid">
-                ·
-              </span>
-              <span>Origin: {product.origin} · Single estate</span>
-            </li>
-            {product.harvest ? (
-              <li className="flex items-baseline gap-3">
-                <span aria-hidden="true" className="text-matcha-mid">
-                  ·
-                </span>
-                <span>Harvest: {product.harvest}</span>
-              </li>
-            ) : null}
-            {product.tastingNotes?.length ? (
-              <li className="flex items-baseline gap-3">
-                <span aria-hidden="true" className="text-matcha-mid">
-                  ·
-                </span>
-                <span>Notes: {product.tastingNotes.join(", ")}</span>
-              </li>
-            ) : null}
-          </motion.ul>
-
-          <motion.p
-            variants={itemVariants}
-            className="serif mt-12 max-w-md text-lg leading-relaxed text-ink"
-          >
-            {product.description}
-          </motion.p>
-
-          <motion.div
-            variants={itemVariants}
-            className="mt-14 flex items-center gap-4"
-          >
-            <div
-              className="inline-flex items-center rounded-full border border-line"
-              role="group"
-              aria-label="Quantity"
-            >
-              <button
-                type="button"
-                aria-label="Decrease quantity"
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="px-4 py-2 text-lg text-ink-soft transition-colors hover:text-matcha-deep"
+          <div>
+            <p className="text-xs uppercase tracking-[0.28em] text-matcha-mid">
+              Beli di marketplace
+            </p>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
+              Pilih platform yang paling nyaman untuk checkout, promo, dan
+              pengiriman ke seluruh Indonesia.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {marketplaceLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-matcha-deep px-6 py-3 text-sm tracking-wide text-cream transition-colors duration-300 hover:bg-matcha-mid focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
               >
-                −
-              </button>
-              <span
-                aria-live="polite"
-                className="w-8 text-center text-sm tabular-nums"
-              >
-                {quantity}
-              </span>
-              <button
-                type="button"
-                aria-label="Increase quantity"
-                onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                className="px-4 py-2 text-lg text-ink-soft transition-colors hover:text-matcha-deep"
-              >
-                +
-              </button>
-            </div>
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            className="mt-8 flex flex-wrap items-center gap-6"
-          >
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ duration: 0.25, ease: EASE_OUT }}
-              onClick={() => addItem(product, quantity)}
-              className="inline-flex items-center justify-center rounded-full bg-matcha-deep px-10 py-4 text-sm tracking-wide text-cream transition-colors duration-300 hover:bg-matcha-mid focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
-            >
-              Add to Ritual
-            </motion.button>
-            <Link
-              href={`/shop/${product.slug}`}
-              prefetch={false}
-              className="text-sm text-ink underline underline-offset-[6px] transition-colors hover:text-matcha-deep"
-            >
-              View full details
-            </Link>
-          </motion.div>
-
-          <motion.p
-            variants={itemVariants}
-            className="mt-14 text-[11px] uppercase tracking-[0.22em] text-ink-soft"
-          >
-            Free shipping across Indonesia &middot; Ships within 24 hours &middot;
-            Harvested this season
-          </motion.p>
+                {link.label}
+              </a>
+            ))}
+          </div>
         </motion.div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 34 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={revealViewport}
+        transition={{ duration: 0.95, ease: EASE_OUT }}
+        className="mx-auto mt-20 max-w-5xl"
+      >
+        <Image
+          src="/how-to-matcha.png"
+          alt="How to make matcha with Homelab Pure Matcha"
+          width={1800}
+          height={1200}
+          sizes="(min-width: 1024px) 72vw, 100vw"
+          className="h-auto w-full rounded-sm shadow-[0_36px_100px_-55px_rgba(74,93,58,0.45)]"
+        />
+      </motion.div>
     </motion.section>
   );
 }

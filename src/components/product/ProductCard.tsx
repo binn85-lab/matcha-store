@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Product } from "@/types/product";
-import { formatIDR } from "@/lib/utils";
 import { EASE_OUT } from "@/lib/motion";
 
 interface ProductCardProps {
@@ -17,7 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link
         href={`/shop/${product.slug}`}
         prefetch={false}
-        aria-label={`${product.name} ${product.subtitle} — ${formatIDR(product.price)}`}
+        aria-label={`${product.name} ${product.subtitle}`}
         className="group block focus:outline-none"
       >
         <motion.div
@@ -37,7 +36,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </motion.div>
 
-        <div className="mt-6 flex items-start justify-between gap-4">
+        <div className="mt-6">
           <div>
             <h3 className="serif text-2xl text-ink transition-colors duration-500 group-hover:text-matcha-deep">
               {product.name}
@@ -47,9 +46,6 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.size ? ` · ${product.size}` : null}
             </p>
           </div>
-          <span className="whitespace-nowrap text-sm text-matcha-deep">
-            {formatIDR(product.price)}
-          </span>
         </div>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">
           {product.description}

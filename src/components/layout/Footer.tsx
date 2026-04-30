@@ -65,8 +65,8 @@ export function Footer() {
               className="h-8 w-auto object-contain"
             />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">
-              A quiet laboratory for tea lovers. Single-origin matcha and the
-              tools to brew it well — shipped carefully from Indonesia.
+              A quiet laboratory for tea lovers. Pure matcha powder and simple
+              brewing inspiration for daily cups across Indonesia.
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a
@@ -109,20 +109,17 @@ export function Footer() {
 
           <div className="md:col-span-2">
             <h3 className="text-xs font-medium uppercase tracking-[0.18em] text-matcha-deep">
-              Visit
+              Contact
             </h3>
             <address className="mt-5 space-y-1 text-sm not-italic leading-relaxed text-ink-soft">
-              <span className="block">Matcha Indonesia</span>
-              <span className="block">Jakarta, Indonesia</span>
+              <span className="block">Homelab Indonesia</span>
               <span className="block">hello@homelab.id</span>
             </address>
           </div>
         </div>
 
         <div className="mt-14 flex flex-col gap-2 border-t border-line pt-6 text-xs text-ink-soft md:flex-row md:items-center md:justify-between">
-          <p>
-            &copy; {year} Matcha Indonesia. Crafted with care in Jakarta.
-          </p>
+          <p>&copy; {year} Homelab. Made for matcha rituals across Indonesia.</p>
           <p className="tracking-wide">Est. 2026 &middot; Made for the ritual.</p>
         </div>
       </div>

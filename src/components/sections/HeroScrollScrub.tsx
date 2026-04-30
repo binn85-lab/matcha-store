@@ -10,7 +10,7 @@ type Mode = "scrub" | "autoplay" | "static";
 
 const beats = [
   {
-    eyebrow: "Premium Matcha · Jakarta",
+    eyebrow: "Premium Matcha · Indonesia",
     headline: "A quiet laboratory",
     sub: "for tea lovers.",
     start: 0,
@@ -59,9 +59,8 @@ export function HeroScrollScrub() {
       (conn?.effectiveType ? ["2g", "slow-2g"].includes(conn.effectiveType) : false);
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
 
-    if (reduced || slow) setMode("static");
-    else if (iOS) setMode("autoplay");
-    else setMode("scrub");
+    const nextMode = reduced || slow ? "static" : iOS ? "autoplay" : "scrub";
+    queueMicrotask(() => setMode(nextMode));
   }, []);
 
   // Scrub: drive video.currentTime from scroll, throttled to rAF.
@@ -118,7 +117,7 @@ export function HeroScrollScrub() {
   }, [mode, videoErrored]);
 
   if (mode === "static") {
-    return <StaticHero videoErrored={videoErrored} />;
+    return <StaticHero />;
   }
 
   return (
@@ -291,7 +290,7 @@ function ScrubProgressBar({
   );
 }
 
-function StaticHero({ videoErrored: _videoErrored }: { videoErrored: boolean }) {
+function StaticHero() {
   const onShop = useSmartShopScroll();
   return (
     <section

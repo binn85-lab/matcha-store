@@ -1,25 +1,22 @@
 "use client";
 
 import { motion, type HTMLMotionProps, type Variants } from "framer-motion";
-import type { ElementType, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { fadeUp, fadeUpStagger, revealViewport } from "@/lib/motion";
 
 interface RevealProps
   extends Omit<HTMLMotionProps<"div">, "variants" | "initial" | "whileInView"> {
-  as?: ElementType;
   delay?: number;
   y?: number;
   children: ReactNode;
 }
 
 export function Reveal({
-  as,
   delay = 0,
   y = 24,
   children,
   ...rest
 }: RevealProps) {
-  const Component = motion(as ?? "div");
   const variants: Variants = {
     hidden: { opacity: 0, y },
     visible: {
@@ -29,7 +26,7 @@ export function Reveal({
     },
   };
   return (
-    <Component
+    <motion.div
       initial="hidden"
       whileInView="visible"
       viewport={revealViewport}
@@ -37,27 +34,24 @@ export function Reveal({
       {...rest}
     >
       {children}
-    </Component>
+    </motion.div>
   );
 }
 
 interface RevealGroupProps extends HTMLMotionProps<"div"> {
-  as?: ElementType;
   stagger?: number;
   delayChildren?: number;
   children: ReactNode;
 }
 
 export function RevealGroup({
-  as,
   stagger = 0.1,
   delayChildren = 0,
   children,
   ...rest
 }: RevealGroupProps) {
-  const Component = motion(as ?? "div");
   return (
-    <Component
+    <motion.div
       initial="hidden"
       whileInView="visible"
       viewport={revealViewport}
@@ -65,7 +59,7 @@ export function RevealGroup({
       {...rest}
     >
       {children}
-    </Component>
+    </motion.div>
   );
 }
 

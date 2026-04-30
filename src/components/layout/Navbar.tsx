@@ -182,7 +182,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
         ))}
       </motion.ul>
       <div className="px-8 pb-10 text-xs uppercase tracking-[0.22em] text-ink-soft">
-        Matcha Indonesia &middot; Jakarta
+        Homelab &middot; Seluruh Indonesia
       </div>
     </motion.div>
   );

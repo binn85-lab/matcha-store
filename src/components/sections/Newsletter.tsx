@@ -64,11 +64,11 @@ export function Newsletter() {
             }}
             className="mt-8 max-w-lg text-base leading-relaxed text-ink-soft md:text-lg"
           >
-            Sekali sebulan — kami kirim cerita panen, resep, dan akses awal ke
-            stok terbatas. Tidak ada spam, tidak ada basa-basi.
+            Kami kirim kabar produk, inspirasi resep, dan catatan singkat saat
+            ada update yang benar-benar berguna. Tidak ada spam, tidak ada
+            basa-basi.
             <span className="mt-3 block text-sm italic text-matcha-mid">
-              One email a month — harvest notes, recipes, and early access.
-              No noise.
+              Product notes, recipe ideas, and useful updates only. No noise.
             </span>
           </motion.p>
         </div>
