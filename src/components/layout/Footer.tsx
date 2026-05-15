@@ -70,14 +70,14 @@ export function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/homelab.id"
                 aria-label="Homelab on Instagram"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink-soft transition-colors hover:border-matcha-mid hover:text-matcha-deep"
               >
                 <InstagramIcon className="h-4 w-4" />
               </a>
               <a
-                href="mailto:hello@homelab.id"
+                href="mailto:homelabid@gmail.com"
                 aria-label="Email Homelab"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink-soft transition-colors hover:border-matcha-mid hover:text-matcha-deep"
               >
@@ -113,7 +113,7 @@ export function Footer() {
             </h3>
             <address className="mt-5 space-y-1 text-sm not-italic leading-relaxed text-ink-soft">
               <span className="block">Homelab Indonesia</span>
-              <span className="block">hello@homelab.id</span>
+              <span className="block">homelabid@gmail.com</span>
             </address>
           </div>
         </div>
