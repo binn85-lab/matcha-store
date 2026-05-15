@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description:
     "Shop premium Japanese matcha powder in Indonesia with Homelab. Smooth Uji-style matcha for latte, whisked tea, baking, and daily rituals at home.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.homelab.co.id",
   ),
   openGraph: {
     title: "Homelab — Premium Japanese Matcha in Indonesia",
