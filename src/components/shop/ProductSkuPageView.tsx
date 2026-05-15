@@ -3,6 +3,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { MetaProductViewEvent } from "@/components/analytics/MetaPixel";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 import {
   buildWiifmDescription,
   formatCatalogPrice,
@@ -43,34 +44,7 @@ export function ProductSkuPageView({ item }: { item: CatalogItem }) {
             </Link>
 
             <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:items-start">
-              <div className="grid gap-4">
-                <div className="flex snap-x snap-mandatory overflow-x-auto rounded-sm bg-cream-soft [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  {images.map((image, index) => (
-                    <img
-                      key={`${image}-${index}`}
-                      src={image}
-                      alt={`${title} ${index + 1}`}
-                      loading={index === 0 ? "eager" : "lazy"}
-                      referrerPolicy="no-referrer"
-                      className="aspect-square w-full flex-[0_0_100%] snap-start object-cover"
-                    />
-                  ))}
-                </div>
-                {images.length > 1 ? (
-                  <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                    {images.slice(0, 8).map((image, index) => (
-                      <img
-                        key={`thumb-${image}-${index}`}
-                        src={image}
-                        alt={`${title} thumbnail ${index + 1}`}
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                        className="h-20 w-20 shrink-0 rounded-sm border border-line object-cover"
-                      />
-                    ))}
-                  </div>
-                ) : null}
-              </div>
+              <ProductImageGallery images={images} productName={title} />
 
               <article>
                 <p className="text-xs uppercase tracking-[0.3em] text-matcha-mid">
