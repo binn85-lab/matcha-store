@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type Variants } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import type { Product } from "@/types/product";
 import { EASE_OUT, revealViewport } from "@/lib/motion";
 import { marketplaceLinks } from "@/lib/marketplace-links";
@@ -153,9 +153,9 @@ export function ProductShowcase({ products }: ProductShowcaseProps) {
         <Link
           href="/shop"
           prefetch={false}
-          className="group inline-flex items-center justify-center gap-2 rounded-full border border-matcha-deep bg-transparent px-7 py-3 text-sm tracking-wide text-matcha-deep transition-colors duration-300 hover:bg-matcha-deep hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+          className="group inline-flex items-center justify-center gap-2 rounded-full border border-matcha-deep bg-matcha-deep px-8 py-3.5 text-sm font-medium tracking-wide text-cream shadow-[0_18px_48px_-24px_rgba(74,93,58,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-matcha-mid hover:shadow-[0_22px_60px_-24px_rgba(74,93,58,0.95)] focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
         >
-          Lihat semua produk
+          View all products
           <ArrowRight
             className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
             aria-hidden="true"
@@ -163,32 +163,38 @@ export function ProductShowcase({ products }: ProductShowcaseProps) {
         </Link>
       </motion.div>
 
-      <div className="mx-auto mt-12 max-w-7xl rounded-sm border border-line bg-cream p-5 md:p-7">
+      <div className="mx-auto mt-12 max-w-7xl overflow-hidden rounded-sm border border-matcha-deep/15 bg-cream shadow-[0_36px_100px_-70px_rgba(74,93,58,0.55)]">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={revealViewport}
           transition={{ duration: 0.85, ease: EASE_OUT }}
-          className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"
+          className="grid gap-7 p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-7"
         >
-          <div>
+          <div className="max-w-2xl">
             <p className="text-xs uppercase tracking-[0.28em] text-matcha-mid">
-              Beli di marketplace
+              Where to order
             </p>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
-              Pilih platform yang paling nyaman untuk checkout, promo, dan
-              pengiriman ke seluruh Indonesia.
+            <h3 className="serif mt-3 text-3xl leading-tight text-matcha-deep md:text-4xl">
+              Start your matcha ritual your way.
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft md:text-base">
+              Explore our official stores for everyday checkout, or chat with
+              us on WhatsApp for product guidance, gifting, and bulk orders.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:justify-end">
             {marketplaceLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full bg-matcha-deep px-6 py-3 text-sm tracking-wide text-cream transition-colors duration-300 hover:bg-matcha-mid focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-matcha-deep px-5 py-3 text-sm tracking-wide text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-matcha-mid focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
               >
+                {link.label === "WhatsApp" ? (
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                ) : null}
                 {link.label}
               </a>
             ))}
