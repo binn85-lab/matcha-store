@@ -125,4 +125,123 @@ export const journalPosts = [
       },
     ],
   },
+  {
+    slug: "why-good-matcha-shouldnt-taste-bitter",
+    title: "Why Good Matcha Shouldn't Taste Bitter",
+    eyebrow: "Journal",
+    date: "May 2026",
+    readTime: "5 min read",
+    category: "Matcha Quality",
+    image: {
+      src: "/journal/why-good-matcha-shouldnt-taste-bitter.png",
+      alt: "A warm bowl of ceremonial matcha with bamboo whisk, water glass, and matcha powder in soft morning light",
+      width: 1536,
+      height: 1024,
+    },
+    excerpt:
+      "High quality ceremonial matcha should feel smooth, creamy, naturally sweet, and rich in umami, not harsh or unpleasant.",
+    blocks: [
+      {
+        type: "paragraph",
+        text: "One of the biggest misconceptions about matcha is that it is supposed to taste bitter.",
+      },
+      {
+        type: "paragraph",
+        text: "In reality, high quality ceremonial grade matcha should taste smooth, creamy, naturally sweet, and rich in umami, not harsh or unpleasant.",
+      },
+      {
+        type: "paragraph",
+        text: "If your matcha tastes extremely bitter, grassy, or overly astringent, there is usually a reason behind it.",
+      },
+      {
+        type: "paragraph",
+        text: "The quality of the tea leaves matters enormously. Premium Japanese ceremonial matcha is made from carefully shade-grown tea leaves that are harvested young and processed delicately to preserve their vibrant green color and smooth flavor profile.",
+      },
+      {
+        type: "paragraph",
+        text: "During the shading process, tea plants produce more chlorophyll and L-theanine, which contribute to matcha's deep green appearance and naturally balanced taste. This is one reason why good matcha feels softer and more rounded compared to lower quality matcha powders.",
+      },
+      {
+        type: "list",
+        intro: "Cheap or lower grade matcha is often:",
+        items: [
+          "dull green",
+          "yellowish",
+          "overly bitter",
+          "sandy in texture",
+          "flat in aroma",
+        ],
+      },
+      {
+        type: "list",
+        intro: "Meanwhile, high quality ceremonial matcha is usually:",
+        items: [
+          "vibrant green",
+          "smooth",
+          "creamy",
+          "naturally sweet",
+          "rich in umami",
+          "silky on the palate",
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "Another major factor is water temperature.",
+      },
+      {
+        type: "paragraph",
+        text: "Many people accidentally burn their matcha using boiling water. This instantly increases bitterness and destroys some of the delicate flavor compounds. Traditional Japanese tea preparation usually uses water around 70-80 C for ceremonial matcha.",
+      },
+      {
+        type: "paragraph",
+        text: "Using water that is too hot can make even good matcha taste unpleasant.",
+      },
+      {
+        type: "paragraph",
+        text: "Preparation technique also matters. Matcha should be sifted before whisking to avoid clumps and create a smoother texture. Using a bamboo whisk helps incorporate air and creates the signature creamy foam associated with traditional matcha preparation.",
+      },
+      {
+        type: "paragraph",
+        text: "The origin of the matcha also affects flavor. Different regions in Japan produce slightly different taste profiles. Some matcha tastes more nutty and creamy, while others are more floral, vegetal, or umami-forward.",
+      },
+      {
+        type: "paragraph",
+        text: "Many people who say they do not like matcha actually have never tried good ceremonial grade matcha.",
+      },
+      {
+        type: "list",
+        intro: "They may have experienced:",
+        items: [
+          "low quality culinary matcha",
+          "overly sweet cafe drinks",
+          "bitter matcha powder",
+          "incorrect brewing methods",
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "Good matcha should feel balanced and enjoyable even without sugar.",
+      },
+      {
+        type: "paragraph",
+        text: "That is why many matcha enthusiasts enjoy drinking it traditionally with only water. When prepared correctly, the texture becomes creamy and smooth, while the flavor feels clean, comforting, and naturally rich.",
+      },
+      {
+        type: "paragraph",
+        text: "Today, ceremonial matcha has become popular not only for wellness and antioxidants, but also because people are searching for calmer and more intentional rituals in daily life.",
+      },
+      {
+        type: "statement",
+        text: "A good bowl of matcha should not feel aggressive. It should feel calming.",
+      },
+      {
+        type: "statement",
+        text: "Soft energy. Smooth flavor. Quiet focus.",
+      },
+      {
+        type: "paragraph",
+        text: "That is the beauty of properly prepared ceremonial matcha.",
+      },
+    ],
+  },
 ] as const;
