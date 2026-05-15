@@ -50,6 +50,61 @@ export function MetaPixel() {
   );
 }
 
+interface MetaProductViewEventProps {
+  contentId: string;
+  contentName: string;
+  contentCategory?: string;
+  value?: number;
+}
+
+export function MetaProductViewEvent({
+  contentId,
+  contentName,
+  contentCategory,
+  value,
+}: MetaProductViewEventProps) {
+  const pathname = usePathname();
+  const sentKey = useRef("");
+
+  useEffect(() => {
+    const eventKey = `${pathname}:${contentId}`;
+    if (sentKey.current === eventKey) return;
+
+    let attempts = 0;
+    const payload = {
+      content_ids: [contentId],
+      content_type: "product",
+      content_name: contentName,
+      content_category: contentCategory,
+      contents: [
+        {
+          id: contentId,
+          quantity: 1,
+          ...(typeof value === "number" ? { item_price: value } : {}),
+        },
+      ],
+      ...(typeof value === "number" ? { value, currency: "IDR" } : {}),
+    };
+
+    const sendViewContent = () => {
+      attempts += 1;
+      if (typeof window.fbq === "function") {
+        window.fbq("track", "ViewContent", payload);
+        sentKey.current = eventKey;
+        return;
+      }
+
+      if (attempts < 20) {
+        window.setTimeout(sendViewContent, 250);
+      }
+    };
+
+    sendViewContent();
+  }, [contentCategory, contentId, contentName, pathname, value]);
+
+  return null;
+}
+
 function MetaPixelRouteEvents() {
   const pathname = usePathname();
   const searchParams = useSearchParams();

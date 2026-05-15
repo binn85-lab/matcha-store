@@ -4,6 +4,7 @@ import type { CatalogData, CatalogProduct, CatalogVariant } from "@/types/catalo
 export interface CatalogItem {
   product: CatalogProduct;
   variant: CatalogVariant;
+  metaId: string;
   productSlug: string;
   sku: string;
   skuSlug: string;
@@ -27,6 +28,8 @@ export function getCatalogItems(): CatalogItem[] {
   const scopedSeen = new Map<string, number>();
   const globalSkuCounts = new Map<string, number>();
   const directSeen = new Map<string, number>();
+  const metaIdCounts = new Map<string, number>();
+  const metaIdSeen = new Map<string, number>();
 
   const baseItems = catalog.products.flatMap((product) => {
     const variants =
@@ -49,6 +52,7 @@ export function getCatalogItems(): CatalogItem[] {
       scopedSeen.set(key, count + 1);
       const skuSlug = count ? `${baseSkuSlug}-${count + 1}` : baseSkuSlug;
       globalSkuCounts.set(baseSkuSlug, (globalSkuCounts.get(baseSkuSlug) ?? 0) + 1);
+      metaIdCounts.set(sku, (metaIdCounts.get(sku) ?? 0) + 1);
 
       return {
         product,
@@ -62,6 +66,13 @@ export function getCatalogItems(): CatalogItem[] {
   });
 
   return baseItems.map((item) => {
+    const baseMetaId =
+      (metaIdCounts.get(item.sku) ?? 0) > 1
+        ? `${item.sku}-${item.product.id || item.product.slug}`
+        : item.sku;
+    const metaIdCount = metaIdSeen.get(baseMetaId) ?? 0;
+    metaIdSeen.set(baseMetaId, metaIdCount + 1);
+    const metaId = metaIdCount ? `${baseMetaId}-${metaIdCount + 1}` : baseMetaId;
     const baseDirectSlug =
       (globalSkuCounts.get(slugifyCatalogValue(item.sku)) ?? 0) > 1
         ? `${item.productSlug}-${item.skuSlug}`
@@ -72,6 +83,7 @@ export function getCatalogItems(): CatalogItem[] {
 
     return {
       ...item,
+      metaId,
       directSkuSlug,
       directPath: `/shop/${directSkuSlug}`,
     };

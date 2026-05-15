@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { MetaProductViewEvent } from "@/components/analytics/MetaPixel";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import {
@@ -22,6 +23,12 @@ export function ProductSkuPageView({ item }: { item: CatalogItem }) {
 
   return (
     <>
+      <MetaProductViewEvent
+        contentId={item.metaId}
+        contentName={title}
+        contentCategory={product.category}
+        value={price}
+      />
       <Navbar />
       <main className="flex-1 bg-cream">
         <section className="px-6 pb-16 pt-28 lg:px-10 lg:pb-24">
