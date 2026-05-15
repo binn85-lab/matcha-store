@@ -1,10 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type Variants } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import type { Product } from "@/types/product";
 import { EASE_OUT, revealViewport } from "@/lib/motion";
+import { marketplaceLinks } from "@/lib/marketplace-links";
 import { SHOWCASE_ANCHOR_ID } from "@/lib/use-smart-shop-scroll";
 
 const itemVariants: Variants = {
@@ -19,21 +22,6 @@ const itemVariants: Variants = {
 interface ProductShowcaseProps {
   products: Product[];
 }
-
-const marketplaceLinks = [
-  {
-    label: "Shopee",
-    href: "https://s.shopee.co.id/70Gb0DtNUE",
-  },
-  {
-    label: "Tokopedia",
-    href: "https://tk.tokopedia.com/ZS9fFGx3F/",
-  },
-  {
-    label: "TikTok Shop",
-    href: "https://vt.tiktok.com/ZS9fYFr3t/?page=Mall",
-  },
-];
 
 export function ProductShowcase({ products }: ProductShowcaseProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -154,6 +142,26 @@ export function ProductShowcase({ products }: ProductShowcaseProps) {
           );
         })}
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={revealViewport}
+        transition={{ duration: 0.85, ease: EASE_OUT }}
+        className="mx-auto mt-10 flex max-w-7xl justify-center"
+      >
+        <Link
+          href="/shop"
+          prefetch={false}
+          className="group inline-flex items-center justify-center gap-2 rounded-full border border-matcha-deep bg-transparent px-7 py-3 text-sm tracking-wide text-matcha-deep transition-colors duration-300 hover:bg-matcha-deep hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+        >
+          Lihat semua produk
+          <ArrowRight
+            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+            aria-hidden="true"
+          />
+        </Link>
+      </motion.div>
 
       <div className="mx-auto mt-12 max-w-7xl rounded-sm border border-line bg-cream p-5 md:p-7">
         <motion.div

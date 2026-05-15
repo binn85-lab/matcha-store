@@ -6,10 +6,9 @@ import { useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import { EASE_OUT } from "@/lib/motion";
-import { useSmartShopScroll } from "@/lib/use-smart-shop-scroll";
 
 const navLinks = [
-  { href: "/shop", label: "Shop", smartShop: true },
+  { href: "/shop", label: "Shop" },
   { href: "/story", label: "The Matcha Story" },
   { href: "/journal", label: "Journal" },
   { href: "/contact", label: "Contact" },
@@ -19,7 +18,6 @@ export function Navbar() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const onShop = useSmartShopScroll();
 
   useMotionValueEvent(scrollY, "change", (y) => {
     setScrolled(y > 100);
@@ -64,7 +62,6 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   prefetch={false}
-                  onClick={"smartShop" in link && link.smartShop ? onShop : undefined}
                   className="group relative text-sm tracking-wide text-ink-soft transition-colors duration-300 hover:text-matcha-deep"
                 >
                   <span className="relative">
@@ -116,7 +113,6 @@ export function Navbar() {
 }
 
 function MobileMenu({ onClose }: { onClose: () => void }) {
-  const onShop = useSmartShopScroll();
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -170,10 +166,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
             <Link
               href={link.href}
               prefetch={false}
-              onClick={(e) => {
-                if ("smartShop" in link && link.smartShop) onShop(e);
-                onClose();
-              }}
+              onClick={onClose}
               className="serif block text-5xl text-matcha-deep transition-colors hover:text-matcha-mid"
             >
               {link.label}

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
-import { useSmartShopScroll } from "@/lib/use-smart-shop-scroll";
 
 type Mode = "scrub" | "autoplay" | "static";
 
@@ -239,7 +238,6 @@ function CtaRow({
   const pointerEvents = useTransform(scrollYProgress, (p) =>
     p > 0.82 ? "auto" : "none",
   );
-  const onShop = useSmartShopScroll();
 
   return (
     <motion.div
@@ -249,7 +247,6 @@ function CtaRow({
       <Link
         href="/shop"
         prefetch={false}
-        onClick={onShop}
         className="inline-flex items-center justify-center rounded-full bg-matcha-deep px-8 py-3 text-sm tracking-wide text-cream shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5)] transition-all duration-300 hover:scale-[1.03] hover:bg-matcha-mid focus:outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
       >
         Shop Matcha
@@ -291,7 +288,6 @@ function ScrubProgressBar({
 }
 
 function StaticHero() {
-  const onShop = useSmartShopScroll();
   return (
     <section
       aria-labelledby="hero-static-heading"
@@ -330,7 +326,6 @@ function StaticHero() {
           <Link
             href="/shop"
             prefetch={false}
-            onClick={onShop}
             className="inline-flex items-center justify-center rounded-full bg-matcha-deep px-8 py-3 text-sm tracking-wide text-cream shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5)] transition-colors duration-300 hover:bg-matcha-mid"
           >
             Shop Matcha
