@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { ExternalLink, Search } from "lucide-react";
 import Link from "next/link";
 import type { CatalogData, CatalogProduct } from "@/types/catalog";
-import { getCatalogItems } from "@/lib/catalog";
+import { formatCatalogPrice, getCatalogItems, getVariantPrice, type CatalogItem } from "@/lib/catalog";
 
 type SortOption = "recommended" | "price-asc" | "price-desc" | "name-asc" | "photos-desc";
 
@@ -22,6 +22,16 @@ export function ShopCatalog({ data }: ShopCatalogProps) {
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortOption>("recommended");
+
+  const itemsByProductId = useMemo(() => {
+    const map = new Map<string, CatalogItem[]>();
+    for (const item of getCatalogItems()) {
+      const existing = map.get(item.product.id) ?? [];
+      existing.push(item);
+      map.set(item.product.id, existing);
+    }
+    return map;
+  }, []);
 
   const categories = data.categories.filter((item) => {
     if (item === "All") return data.products.length > 0;
@@ -117,25 +127,24 @@ export function ShopCatalog({ data }: ShopCatalogProps) {
 
       <div className="mt-8 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
         {products.map((product) => (
-          <ProductTile key={product.id} product={product} />
+          <ProductTile
+            key={product.id}
+            product={product}
+            items={itemsByProductId.get(product.id) ?? []}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function ProductTile({ product }: { product: CatalogProduct }) {
-  const firstItem = getCatalogItems().find((item) => item.product.id === product.id);
+function ProductTile({ product, items }: { product: CatalogProduct; items: CatalogItem[] }) {
+  const firstItem = items[0];
   const images = product.images?.length ? product.images : ["/products/pure-matcha-50g.png"];
   const compareAt =
     product.compareAtPrice && product.price && product.compareAtPrice > product.price
       ? product.compareAtPrice
       : undefined;
-  const variantSkus = product.variants
-    ?.map((variant) => variant.sku)
-    .filter(Boolean)
-    .slice(0, 2)
-    .join(" · ");
 
   return (
     <article className="group flex min-h-full flex-col overflow-hidden rounded-sm border border-line bg-cream-soft">
@@ -176,20 +185,48 @@ function ProductTile({ product }: { product: CatalogProduct }) {
         <p className="mt-4 text-xs uppercase tracking-[0.18em] text-matcha-mid">
           {product.variantSummary || `${product.variants?.length ?? 0} varian`}
         </p>
-        {variantSkus ? (
-          <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-            SKU:{" "}
-            {firstItem ? (
+
+        {firstItem ? (
+          <Link
+            href={firstItem.directPath}
+            prefetch={false}
+            className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-matcha-deep bg-matcha-deep px-4 py-2 text-sm font-semibold text-cream transition-colors hover:bg-matcha-mid focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid focus-visible:ring-offset-2 focus-visible:ring-offset-cream-soft"
+          >
+            Lihat detail produk
+          </Link>
+        ) : null}
+
+        {items.length ? (
+          <div className="mt-5">
+            <p className="text-xs uppercase tracking-[0.18em] text-matcha-mid">Pilih SKU</p>
+            <div className="mt-3 flex max-h-44 flex-wrap gap-2 overflow-y-auto pr-1">
+              {items.map((item) => (
+                <Link
+                  key={`${item.productSlug}-${item.skuSlug}`}
+                  href={item.directPath}
+                  prefetch={false}
+                  className="inline-flex min-h-9 items-center rounded-full border border-line bg-cream px-3 py-2 text-xs font-medium text-ink-soft transition-colors hover:border-matcha-deep hover:bg-matcha-deep hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid"
+                  title={`${item.sku} - ${formatCatalogPrice(getVariantPrice(item))}`}
+                >
+                  {getSkuLabel(item)}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {firstItem ? (
+          <p className="mt-3 text-xs leading-relaxed text-ink-soft">
+            Link SKU utama:{" "}
+            <span className="break-all">
               <Link
                 href={firstItem.directPath}
                 prefetch={false}
                 className="underline decoration-line underline-offset-4 transition-colors hover:text-matcha-deep"
               >
-                {variantSkus}
+                {firstItem.sku}
               </Link>
-            ) : (
-              variantSkus
-            )}
+            </span>
           </p>
         ) : null}
 
@@ -210,6 +247,12 @@ function ProductTile({ product }: { product: CatalogProduct }) {
       </div>
     </article>
   );
+}
+
+function getSkuLabel(item: CatalogItem) {
+  const name = item.variant.name?.trim();
+  if (name && name.toLowerCase() !== "default") return name;
+  return item.sku;
 }
 
 function ProductGallery({
