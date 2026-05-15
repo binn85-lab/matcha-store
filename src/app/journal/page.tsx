@@ -9,7 +9,7 @@ import { journalPosts } from "@/lib/journal-posts";
 export const metadata: Metadata = {
   title: "Journal | Homelab",
   description:
-    "Read Homelab journal notes on matcha, calm focus, coffee alternatives, and everyday rituals.",
+    "Baca catatan Homelab tentang matcha, fokus tenang, alternatif kopi, dan ritual harian.",
 };
 
 export default function JournalPage() {
@@ -25,17 +25,18 @@ export default function JournalPage() {
                   Journal
                 </p>
                 <h1 className="serif mt-5 text-5xl leading-[1.02] text-matcha-deep md:text-7xl">
-                  Notes for a calmer
-                  <span className="italic text-matcha-mid"> matcha ritual.</span>
+                  Catatan untuk ritual
+                  <span className="italic text-matcha-mid"> matcha yang tenang.</span>
                 </h1>
               </div>
               <div className="max-w-xl">
                 <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">
-                  {journalPosts.length} articles / Homelab Matcha Journal
+                  {journalPosts.length} artikel / Homelab Matcha Journal
                 </p>
                 <p className="mt-4 text-base leading-relaxed text-ink-soft md:text-lg">
-                  A growing collection of matcha notes on calm energy,
-                  ceremonial quality, coffee alternatives, and everyday rituals.
+                  Kumpulan catatan tentang energi yang tenang, kualitas
+                  ceremonial matcha, alternatif kopi, dan ritual harian yang
+                  lebih mindful.
                 </p>
               </div>
             </div>
@@ -61,7 +62,7 @@ export default function JournalPage() {
                   <div className="mt-14 grid gap-12 lg:grid-cols-[280px_minmax(0,760px)] lg:gap-20">
                     <aside className="lg:sticky lg:top-28 lg:self-start">
                       <p className="text-xs uppercase tracking-[0.24em] text-matcha-mid">
-                        Article {postIndex + 1}
+                        Artikel {postIndex + 1}
                       </p>
                       <h2 className="serif mt-4 text-3xl leading-tight text-matcha-deep">
                         {post.title}
@@ -76,7 +77,7 @@ export default function JournalPage() {
                         href="/shop"
                         className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full border border-matcha-deep bg-matcha-deep px-5 py-2 text-sm font-semibold text-cream transition-colors hover:bg-matcha-mid focus:outline-none focus-visible:ring-2 focus-visible:ring-matcha-mid"
                       >
-                        Explore matcha
+                        Jelajahi matcha
                         <ArrowRight className="h-4 w-4" aria-hidden="true" />
                       </Link>
                     </aside>
