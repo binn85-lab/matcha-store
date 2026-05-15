@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, Search } from "lucide-react";
 import Link from "next/link";
 import type { CatalogData, CatalogProduct } from "@/types/catalog";
@@ -33,10 +33,29 @@ export function ShopCatalog({ data }: ShopCatalogProps) {
     return map;
   }, []);
 
-  const categories = data.categories.filter((item) => {
-    if (item === "All") return data.products.length > 0;
-    return data.products.some((product) => product.category === item);
-  });
+  const categories = useMemo(
+    () =>
+      data.categories.filter((item) => {
+        if (item === "All") return data.products.length > 0;
+        return data.products.some((product) => product.category === item);
+      }),
+    [data.categories, data.products],
+  );
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedCategory = params.get("category");
+    const requestedQuery = params.get("q") ?? "";
+    const nextCategory =
+      requestedCategory && categories.includes(requestedCategory) ? requestedCategory : "All";
+
+    const timeout = window.setTimeout(() => {
+      setCategory(nextCategory);
+      setQuery(requestedQuery);
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
+  }, [categories]);
 
   const products = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -80,7 +99,11 @@ export function ShopCatalog({ data }: ShopCatalogProps) {
               <button
                 key={item}
                 type="button"
-                onClick={() => setCategory(item)}
+                onClick={() => {
+                  setCategory(item);
+                  setQuery("");
+                  updateShopUrl(item);
+                }}
                 className={`rounded-full border px-4 py-2 text-xs tracking-wide transition-colors ${
                   category === item
                     ? "border-matcha-deep bg-matcha-deep text-cream"
@@ -136,6 +159,14 @@ export function ShopCatalog({ data }: ShopCatalogProps) {
       </div>
     </div>
   );
+}
+
+function updateShopUrl(category: string) {
+  const nextUrl =
+    category === "All"
+      ? "/shop"
+      : `/shop?category=${encodeURIComponent(category)}`;
+  window.history.replaceState(null, "", nextUrl);
 }
 
 function ProductTile({ product, items }: { product: CatalogProduct; items: CatalogItem[] }) {

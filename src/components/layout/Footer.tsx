@@ -25,9 +25,9 @@ const columns = [
   {
     heading: "Shop",
     links: [
-      { href: "/shop/matcha", label: "Ceremonial Matcha" },
-      { href: "/shop/matcha", label: "Culinary Matcha" },
-      { href: "/shop/tools", label: "Tools & Ware" },
+      { href: "/shop?category=Matcha%20Powder&q=ceremonial", label: "Ceremonial Matcha" },
+      { href: "/shop?category=Matcha%20Powder&q=baking", label: "Culinary Matcha" },
+      { href: "/shop?category=Tools", label: "Tools & Ware" },
       { href: "/shop", label: "All products" },
     ],
   },
