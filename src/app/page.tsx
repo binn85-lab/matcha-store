@@ -4,7 +4,7 @@ import { HeroScrollScrub } from "@/components/sections/HeroScrollScrub";
 import RitualSection from "@/components/sections/ritual-section";
 import { ProductShowcase } from "@/components/sections/ProductShowcase";
 import { MatchaRitualStory } from "@/components/sections/SourcedFromJapan";
-import { MatchaStory } from "@/components/sections/MatchaStory";
+import { MatchaJournal } from "@/components/sections/MatchaJournal";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { getFlagshipProducts } from "@/lib/products";
 
@@ -21,7 +21,7 @@ export default function HomePage() {
           <ProductShowcase products={flagshipProducts} />
         ) : null}
         <MatchaRitualStory />
-        <MatchaStory />
+        <MatchaJournal />
         <Newsletter />
       </main>
       <Footer />
