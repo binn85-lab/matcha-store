@@ -68,7 +68,7 @@ export const journalPosts = [
       },
       {
         type: "paragraph",
-        text: "Ritualnya sendiri juga ikut membentuk pengalaman. Menyiapkan matcha membuat kita melambat sejenak: mengocok teh, memperhatikan suhu air, dan menciptakan jeda kecil sebelum memulai hari. Berbeda dari mengambil kopi dengan terburu-buru, matcha sering mengajak kita untuk lebih mindful dan lebih intentional.",
+        text: "Ritualnya sendiri juga ikut membentuk pengalaman. Menyiapkan matcha membuat kita melambat sejenak: mengocok teh, memperhatikan suhu air, dan menciptakan jeda kecil sebelum memulai hari. Berbeda dari mengambil kopi dengan terburu-buru, matcha sering mengajak kita untuk lebih sadar dan lebih penuh niat.",
       },
       {
         type: "paragraph",
@@ -323,7 +323,7 @@ export const journalPosts = [
       },
       {
         type: "paragraph",
-        text: "Alat-alat ini membantu menciptakan pengalaman membuat teh yang lebih pelan dan lebih intentional.",
+        text: "Alat-alat ini membantu menciptakan pengalaman membuat teh yang lebih pelan dan lebih penuh niat.",
       },
       {
         type: "list",
@@ -362,7 +362,7 @@ export const journalPosts = [
           "kesadaran penuh",
           "rutinitas pagi",
           "ritual produktivitas",
-          "sesi journaling",
+          "sesi menulis jurnal",
           "kebiasaan kerja mendalam",
         ],
       },
@@ -418,13 +418,13 @@ export const journalPosts = [
           "coding",
           "mendesain",
           "berpikir strategis",
-          "journaling",
+          "menulis jurnal",
           "sesi kreatif",
         ],
       },
       {
         type: "paragraph",
-        text: "L-theanine adalah salah satu alasan utama matcha sering dikaitkan dengan calm focus. Asam amino ini secara alami mendukung rasa rileks sambil tetap membantu pikiran tetap waspada dan produktif.",
+        text: "L-theanine adalah salah satu alasan utama matcha sering dikaitkan dengan fokus yang tenang. Asam amino ini secara alami mendukung rasa rileks sambil tetap membantu pikiran tetap waspada dan produktif.",
       },
       {
         type: "paragraph",
@@ -461,7 +461,7 @@ export const journalPosts = [
       },
       {
         type: "paragraph",
-        text: "Hari ini, matcha semakin terhubung dengan budaya produktivitas modern dan intentional living.",
+        text: "Hari ini, matcha semakin terhubung dengan budaya produktivitas modern dan cara hidup yang lebih sadar.",
       },
       {
         type: "list",
@@ -482,10 +482,10 @@ export const journalPosts = [
       {
         type: "list",
         intro:
-          "Berbeda dari nuansa hustle culture yang sering melekat pada beberapa gelas kopi, matcha lebih dekat dengan:",
+          "Berbeda dari budaya kerja serba cepat yang sering melekat pada beberapa gelas kopi, matcha lebih dekat dengan:",
         items: [
           "fokus yang berkelanjutan",
-          "rutinitas mindful",
+          "rutinitas yang lebih sadar",
           "alur kreatif",
           "energi seimbang",
           "produktivitas yang lebih tenang",
@@ -499,21 +499,21 @@ export const journalPosts = [
         type: "list",
         intro: "Sebagian orang memasangkan matcha dengan:",
         items: [
-          "journaling",
-          "planning session",
+          "menulis jurnal",
+          "sesi perencanaan",
           "meditasi",
           "membaca",
-          "brainstorming",
+          "curah ide",
           "tugas menulis",
         ],
       },
       {
         type: "paragraph",
-        text: "Ceremonial matcha sangat diapresiasi karena rasa yang lebih halus dan profil energi yang lebih bersih. Matcha berkualitas tinggi bisa terasa comforting sambil tetap membantu menjaga konsentrasi selama berjam-jam.",
+        text: "Ceremonial matcha sangat diapresiasi karena rasa yang lebih halus dan profil energi yang lebih bersih. Matcha berkualitas tinggi bisa terasa menenangkan sambil tetap membantu menjaga konsentrasi selama berjam-jam.",
       },
       {
         type: "paragraph",
-        text: "Lingkungan juga berpengaruh. Meja yang tenang, cahaya alami, distraksi minimal, dan ritual minum yang calm dapat membantu meningkatkan fokus mental dan kualitas kerja.",
+        text: "Lingkungan juga berpengaruh. Meja yang tenang, cahaya alami, distraksi minimal, dan ritual minum yang pelan dapat membantu meningkatkan fokus mental dan kualitas kerja.",
       },
       {
         type: "list",

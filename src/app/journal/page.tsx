@@ -36,7 +36,7 @@ export default function JournalPage() {
                 <p className="mt-4 text-base leading-relaxed text-ink-soft md:text-lg">
                   Kumpulan catatan tentang energi yang tenang, kualitas
                   ceremonial matcha, alternatif kopi, dan ritual harian yang
-                  lebih mindful.
+                  lebih sadar.
                 </p>
               </div>
             </div>
