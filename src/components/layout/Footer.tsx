@@ -21,6 +21,19 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+    >
+      <path d="M16.7 3c.4 2.3 1.8 3.9 4.1 4.2v3.1a8 8 0 0 1-4.1-1.2v5.7c0 3.7-2.5 6.2-6.1 6.2-3.2 0-5.7-2.2-5.7-5.3 0-3.4 2.7-5.5 6.2-5.2v3.2c-1.7-.3-3 .5-3 1.9 0 1.3 1 2.2 2.4 2.2 1.5 0 2.7-.8 2.7-3V3h3.5Z" />
+    </svg>
+  );
+}
+
 const columns = [
   {
     heading: "Shop",
@@ -70,11 +83,18 @@ export function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://www.instagram.com/homelab.id"
+                href="https://www.instagram.com/homelab_id"
                 aria-label="Homelab on Instagram"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink-soft transition-colors hover:border-matcha-mid hover:text-matcha-deep"
               >
                 <InstagramIcon className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@homelab.id"
+                aria-label="Homelab on TikTok"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink-soft transition-colors hover:border-matcha-mid hover:text-matcha-deep"
+              >
+                <TikTokIcon className="h-4 w-4" />
               </a>
               <a
                 href="mailto:homelabid@gmail.com"
